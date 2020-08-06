@@ -10,7 +10,7 @@ import okhttp3.mockwebserver.MockWebServer
 import org.junit.Rule
 import org.junit.Before
 import org.junit.After
-import org.junit.Ignore
+import org.junit.BeforeClass
 import org.junit.Test
 import org.mozilla.fenix.helpers.AndroidAssetDispatcher
 import org.mozilla.fenix.helpers.HomeActivityIntentTestRule
@@ -36,6 +36,16 @@ class SettingsAboutTest {
         mockWebServer = MockWebServer().apply {
             setDispatcher(AndroidAssetDispatcher())
             start()
+        }
+    }
+
+    // changing the device preference for Touch and Hold delay, to avoid long-clicks instead of a single-click
+    companion object {
+        @BeforeClass
+        @JvmStatic
+        fun setDevicePreference() {
+            val mDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
+            mDevice.executeShellCommand("settings put secure long_press_timeout 3000")
         }
     }
 
@@ -69,7 +79,7 @@ class SettingsAboutTest {
         }
 
     }
-    @Ignore("Failing, see: https://github.com/mozilla-mobile/fenix/issues/13219")
+
     @Test
     fun verifyAboutFirefoxPreview() {
         homeScreen {
